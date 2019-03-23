@@ -5,7 +5,7 @@ import P5Wrapper from 'react-p5-wrapper';
 
 function gen_maze(maze) {
   var cols, rows;
-  var w = 10;
+  var w = 30;
   var grid = [];
 
   var current;
@@ -13,7 +13,7 @@ function gen_maze(maze) {
   var stack = [];
 
   maze.setup = function () {
-    maze.createCanvas(600, 600);
+    maze.createCanvas(630, 630);
     cols = maze.floor(this.width / w);
     rows = maze.floor(this.height / w);
     //maze.frameRate(5);
@@ -53,6 +53,7 @@ function gen_maze(maze) {
       grid[i].show();
     }
     current.highlight();
+    grid[maze.floor(grid.length / 2)].highlight();
   }
 
   function Cell(i, j) {
