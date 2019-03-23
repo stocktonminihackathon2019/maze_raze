@@ -12,8 +12,18 @@ function gen_maze(maze) {
 
   var stack = [];
 
+  var playerOne;
+  var playerTwo;
+
+  maze.myCustomRedrawAccordingToNewPropsHandler = function (props) {
+    playerOne = props.p1;
+    playerTwo = props.p2;
+
+    
+  };
+
   maze.setup = function () {
-    maze.createCanvas(630, 630);
+    maze.createCanvas(631, 631);
     cols = maze.floor(this.width / w);
     rows = maze.floor(this.height / w);
     //maze.frameRate(5);
@@ -31,7 +41,6 @@ function gen_maze(maze) {
     while (stack.length || !started) {
       started = true;
       current.visited = true;
-      current.highlight();
       var next = current.checkNeighbors();
       if (next) {
         next.visited = true;
@@ -45,15 +54,29 @@ function gen_maze(maze) {
         current = stack.pop();
       }
     }
+
+    playerOne = 0;
+    playerTwo = grid.length - 1;
   }
 
   maze.draw = function () {
-    maze.background(51);
+    maze.background(255);
     for (var i = 0; i < grid.length; i++) {
       grid[i].show();
     }
-    current.highlight();
-    grid[maze.floor(grid.length / 2)].highlight();
+    grid[maze.floor(grid.length / 2)].fillGreen();
+
+    maze.push();
+    grid[playerOne].fillRed();
+    grid[playerTwo].fillBlue()
+    maze.pop();
+
+    if (maze.floor(playerOne) === maze.floor(grid.length / 2))
+      grid[maze.floor(grid.length / 2)].fillRed();
+
+    else if (maze.floor(playerTwo) === maze.floor(grid.length / 2))
+      grid[maze.floor(grid.length / 2)].fillBlue();
+
   }
 
   function Cell(i, j) {
@@ -92,19 +115,45 @@ function gen_maze(maze) {
 
 
     }
-    this.highlight = function () {
+    this.fillRed = function() {
       var x = this.i * w;
       var y = this.j * w;
       maze.noStroke();
-      maze.fill(0, 0, 255, 100);
-      maze.rect(x, y, w, w);
+      maze.fill(255, 0, 0);
+      maze.rect(x + 3, y + 3, w - 5, w - 5);
+    }
+
+    this.fillBlue = function() {
+      var x = this.i * w;
+      var y = this.j * w;
+      maze.noStroke();
+      maze.fill(0, 0, 255);
+      // maze.rect(x, y, w, w);
+      maze.rect(x + 3, y + 3, w - 5, w - 5);
 
     }
+
+    this.fillGreen = function() {
+      var x = this.i * w;
+      var y = this.j * w;
+      maze.noStroke();
+      maze.fill(0, 255, 0, 100);
+      maze.rect(x, y, w, w);
+    }
+
+    // this.highlight = function () {
+    //   var x = this.i * w;
+    //   var y = this.j * w;
+    //   maze.noStroke();
+    //   maze.fill(255, 255, 255, 255);
+    //   maze.rect(x, y, w, w);
+
+    // }
 
     this.show = function () {
       var x = this.i * w;
       var y = this.j * w;
-      maze.stroke(255);
+      maze.stroke(0,0,0);
       if (this.walls[0]) {
         maze.line(x, y, x + w, y);
       }
@@ -150,16 +199,105 @@ function gen_maze(maze) {
       a.walls[2] = false;
       b.walls[0] = false;
     }
+
+    if (a.i === 0 )
+      a.walls[3] = true;
+    if (a.i % 21 === 20 )
+      a.walls[1] = true;
+    if (a.j % 21 === 20 )
+      a.walls[2] = true;
   }
 };
 
 
 class Maze extends Component {
+    constructor(props){
+      super(props);
+      this.escFunction = this.escFunction.bind(this);
+    }
 
+    state = {
+      p2: 0,
+      p1: 440
+    }
+
+    escFunction(event){
+      if(event.keyCode === 83) {
+        if(this.state.p2 + 21 >= 0 && this.state.p2 + 21 <= 440)
+        {
+          this.setState({
+            p2: this.state.p2 + 21
+          })
+        }
+      }
+      if(event.keyCode === 87) {
+        if(this.state.p2 - 21 >= 0 && this.state.p2 - 21 <= 440)
+        {
+          this.setState({
+            p2: this.state.p2 - 21
+          })
+        }
+      }
+      if(event.keyCode === 65) {
+        if(this.state.p2 - 1 >= 0 && this.state.p2 - 1 <= 440)
+        {
+          this.setState({
+            p2: this.state.p2 - 1
+          })
+        }
+      }
+      if(event.keyCode === 68) {
+        this.setState({
+          p2: this.state.p2 + 1
+        })
+      }
+
+      if(event.keyCode === 40) {
+        if(this.state.p1 + 21 >= 0 && this.state.p1 + 21 <= 440)
+        {
+          this.setState({
+            p1: this.state.p1 + 21
+          })
+        }
+      }
+      if(event.keyCode === 38) {
+        if(this.state.p1 - 21 >= 0 && this.state.p1 - 21 <= 440)
+        {
+          this.setState({
+            p1: this.state.p1 - 21
+          })
+        }
+      }
+      if(event.keyCode === 37) {
+        if(this.state.p1 - 1 >= 0 && this.state.p1 - 1 <= 440)
+        {
+          this.setState({
+            p1: this.state.p1 - 1
+          })
+        }
+      }
+      if(event.keyCode === 39) {
+        if(this.state.p1 + 1 >= 0 && this.state.p1 + 1 <= 440)
+        this.setState({
+          p1: this.state.p1 + 1
+        })
+      }
+    }
+    componentDidMount(){
+      document.addEventListener("keydown", this.escFunction, false);
+    }
+    componentWillUnmount(){
+      document.removeEventListener("keydown", this.escFunction, false);
+    }
 
   render() {
+ 
+
     return (
-      <P5Wrapper sketch={gen_maze} />
+      <div>
+        <br></br>
+      <P5Wrapper sketch={gen_maze} p2={this.state.p1} p1={this.state.p2}/>
+      </div>
     );
   }
 }
