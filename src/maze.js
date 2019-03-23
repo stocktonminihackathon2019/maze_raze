@@ -5,7 +5,7 @@ import P5Wrapper from 'react-p5-wrapper';
 
 function gen_maze(maze) {
     var cols, rows;
-    var w = 10;
+    var w = 60;
     var grid = [];
     
     var current;
@@ -115,7 +115,6 @@ function gen_maze(maze) {
       
           if (this.visited) {
             maze.noStroke();
-            maze.fill(255, 0, 255, 100);
             maze.rect(x, y, w, w);
           }
         }
