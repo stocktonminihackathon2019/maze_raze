@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
+import styled from 'styled-components';
 
+
+const Wrapper = styled.div`
+  .maze{
+    position: static;
+  }
+`;
 
 
 function gen_maze(maze) {
@@ -112,8 +119,6 @@ function gen_maze(maze) {
       } else {
         return undefined;
       }
-
-
     }
     this.fillRed = function() {
       var x = this.i * w;
@@ -295,6 +300,7 @@ class Maze extends Component {
 
     return (
       <div>
+        <h1 className="maze">MAZE RACE</h1>
         <br></br>
       <P5Wrapper sketch={gen_maze} p2={this.state.p1} p1={this.state.p2}/>
       </div>
