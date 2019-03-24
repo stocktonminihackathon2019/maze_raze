@@ -35,7 +35,7 @@ function gen_maze(maze) {
       }
     }
 
-    current = grid[0];
+    current = grid[maze.floor(grid.length / 2)];
 
     var started = false;
     while (stack.length || !started) {
