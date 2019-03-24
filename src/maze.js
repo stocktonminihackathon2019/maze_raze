@@ -300,7 +300,7 @@ class Maze extends Component {
 
     return (
       <div>
-        <h1 className="maze">MAZE RACE</h1>
+        <h3 className="maze">MAZE RACE</h3>
         <br></br>
       <P5Wrapper sketch={gen_maze} p2={this.state.p1} p1={this.state.p2}/>
       </div>
