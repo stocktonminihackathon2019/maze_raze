@@ -1,14 +1,5 @@
 import React, { Component } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
-import styled from 'styled-components';
-
-
-const Wrapper = styled.div`
-  .maze{
-    position: static;
-  }
-`;
-
 
 function gen_maze(maze) {
   var cols, rows;
@@ -22,12 +13,25 @@ function gen_maze(maze) {
   var playerOne;
   var playerTwo;
 
-  maze.myCustomRedrawAccordingToNewPropsHandler = function (props) {
-    playerOne = props.p1;
-    playerTwo = props.p2;
+  // maze.myCustomRedrawAccordingToNewPropsHandler = function (props) {
+  //   playerOne = props.p1;
+  //   playerTwo = props.p2;
 
-    
-  };
+  //   console.log(props);
+
+  //   if (props.p1_direction == "down")
+  //     if (playerOne + 21 >= 0 && playerOne + 21 <= 440)
+  //       playerOne += 21;
+  //   else if (props.p1_direction == "up")
+  //     if (playerOne - 21 >= 0 && playerOne - 21 <= 440)
+  //       playerOne -= 21;
+  //   else if (props.p1_direction == "left")
+  //     if (playerOne - 1 >= 0 && playerOne - 1 <= 440)
+  //       playerOne -= 1;
+  //   else if (props.p1_direction == "right")
+  //     if (playerOne + 1 >= 0 && playerOne + 1 <= 440)
+  //       playerOne += 1;
+  // };
 
   maze.setup = function () {
     maze.createCanvas(631, 631);
@@ -65,6 +69,52 @@ function gen_maze(maze) {
     playerOne = 0;
     playerTwo = grid.length - 1;
   }
+
+  maze.keyPressed = function () {
+    console.log("test");
+    
+    //PLAYER ONE MOVEMAENTS
+    if (maze.keyCode === maze.DOWN_ARROW) {
+      if (playerTwo + 21 >= 0 && playerTwo + 21 <= 440 && grid[playerTwo].walls[2] === false)
+        playerTwo += 21;
+    }
+    else if (maze.keyCode === maze.UP_ARROW) {
+      if (playerTwo - 21 >= 0 && playerTwo - 21 <= 440 && grid[playerTwo].walls[0] === false)
+        playerTwo -= 21;
+    }
+    else if (maze.keyCode === maze.LEFT_ARROW) {
+
+      if (playerTwo - 1 >= 0 && playerTwo - 1 <= 440 && grid[playerTwo].walls[3] === false)
+        playerTwo -= 1;
+    }
+    else if (maze.keyCode === maze.RIGHT_ARROW) {
+
+      if (playerTwo + 1 >= 0 && playerTwo + 1 <= 440 && grid[playerTwo].walls[1] === false)
+        playerTwo += 1;
+    }
+
+    //PLAYER TWO MOVEMAENTS
+    if (maze.keyCode === 83) {
+      if (playerOne + 21 >= 0 && playerOne + 21 <= 440 && grid[playerOne].walls[2] === false)
+        playerOne += 21;
+    }
+    else if (maze.keyCode === 87) {
+      if (playerOne - 21 >= 0 && playerOne - 21 <= 440 && grid[playerOne].walls[0] === false)
+        playerOne -= 21;
+    }
+    else if (maze.keyCode === 65) {
+
+      if (playerOne - 1 >= 0 && playerOne - 1 <= 440 && grid[playerOne].walls[3] === false)
+        playerOne -= 1;
+    }
+    else if (maze.keyCode === 68) {
+
+      if (playerOne + 1 >= 0 && playerOne + 1 <= 440 && grid[playerOne].walls[1] === false)
+        playerOne += 1;
+    }
+  }
+
+
 
   maze.draw = function () {
     maze.background(255);
@@ -120,7 +170,7 @@ function gen_maze(maze) {
         return undefined;
       }
     }
-    this.fillRed = function() {
+    this.fillRed = function () {
       var x = this.i * w;
       var y = this.j * w;
       maze.noStroke();
@@ -128,7 +178,7 @@ function gen_maze(maze) {
       maze.rect(x + 3, y + 3, w - 5, w - 5);
     }
 
-    this.fillBlue = function() {
+    this.fillBlue = function () {
       var x = this.i * w;
       var y = this.j * w;
       maze.noStroke();
@@ -138,7 +188,7 @@ function gen_maze(maze) {
 
     }
 
-    this.fillGreen = function() {
+    this.fillGreen = function () {
       var x = this.i * w;
       var y = this.j * w;
       maze.noStroke();
@@ -158,7 +208,7 @@ function gen_maze(maze) {
     this.show = function () {
       var x = this.i * w;
       var y = this.j * w;
-      maze.stroke(0,0,0);
+      maze.stroke(0, 0, 0);
       if (this.walls[0]) {
         maze.line(x, y, x + w, y);
       }
@@ -205,104 +255,107 @@ function gen_maze(maze) {
       b.walls[0] = false;
     }
 
-    if (a.i === 0 )
+    if (a.i === 0)
       a.walls[3] = true;
-    if (a.i % 21 === 20 )
+    if (a.i % 21 === 20)
       a.walls[1] = true;
-    if (a.j % 21 === 20 )
+    if (a.j % 21 === 20)
       a.walls[2] = true;
-  }
-};
-
+  };
+}
 
 class Maze extends Component {
-    constructor(props){
-      super(props);
-      this.escFunction = this.escFunction.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this.escFunction = this.escFunction.bind(this);
+  }
 
-    state = {
-      p2: 0,
-      p1: 440
-    }
+  state = {
+    p2_direction: null,
+    p1_direction: "null",
+    p2: 0,
+    p1: 440
+  }
 
-    escFunction(event){
-      if(event.keyCode === 83) {
-        if(this.state.p2 + 21 >= 0 && this.state.p2 + 21 <= 440)
-        {
-          this.setState({
-            p2: this.state.p2 + 21
-          })
-        }
-      }
-      if(event.keyCode === 87) {
-        if(this.state.p2 - 21 >= 0 && this.state.p2 - 21 <= 440)
-        {
-          this.setState({
-            p2: this.state.p2 - 21
-          })
-        }
-      }
-      if(event.keyCode === 65) {
-        if(this.state.p2 - 1 >= 0 && this.state.p2 - 1 <= 440)
-        {
-          this.setState({
-            p2: this.state.p2 - 1
-          })
-        }
-      }
-      if(event.keyCode === 68) {
+  escFunction(event) {
+    if (event.keyCode === 83) {
+      if (this.state.p2 + 21 >= 0 && this.state.p2 + 21 <= 440) {
         this.setState({
-          p2: this.state.p2 + 1
-        })
-      }
-
-      if(event.keyCode === 40) {
-        if(this.state.p1 + 21 >= 0 && this.state.p1 + 21 <= 440)
-        {
-          this.setState({
-            p1: this.state.p1 + 21
-          })
-        }
-      }
-      if(event.keyCode === 38) {
-        if(this.state.p1 - 21 >= 0 && this.state.p1 - 21 <= 440)
-        {
-          this.setState({
-            p1: this.state.p1 - 21
-          })
-        }
-      }
-      if(event.keyCode === 37) {
-        if(this.state.p1 - 1 >= 0 && this.state.p1 - 1 <= 440)
-        {
-          this.setState({
-            p1: this.state.p1 - 1
-          })
-        }
-      }
-      if(event.keyCode === 39) {
-        if(this.state.p1 + 1 >= 0 && this.state.p1 + 1 <= 440)
-        this.setState({
-          p1: this.state.p1 + 1
+          p2: this.state.p2 + 21,
+          p2_direction: "down"
         })
       }
     }
-    componentDidMount(){
-      document.addEventListener("keydown", this.escFunction, false);
+    if (event.keyCode === 87) {
+      if (this.state.p2 - 21 >= 0 && this.state.p2 - 21 <= 440) {
+        this.setState({
+          p2: this.state.p2 - 21,
+          p2_direction: "up"
+        })
+      }
     }
-    componentWillUnmount(){
-      document.removeEventListener("keydown", this.escFunction, false);
+    if (event.keyCode === 65) {
+      if (this.state.p2 - 1 >= 0 && this.state.p2 - 1 <= 440) {
+        this.setState({
+          p2: this.state.p2 - 1,
+          p2_direction: "left"
+        })
+      }
     }
+    if (event.keyCode === 68) {
+      this.setState({
+        p2: this.state.p2 + 1,
+        p2_direction: "right"
+      })
+    }
+
+    if (event.keyCode === 40) {
+      if (this.state.p1 + 21 >= 0 && this.state.p1 + 21 <= 440) {
+        this.setState({
+          p1: this.state.p1 + 21,
+          p1_direction: "down"
+        })
+      }
+    }
+    if (event.keyCode === 38) {
+      if (this.state.p1 - 21 >= 0 && this.state.p1 - 21 <= 440) {
+        this.setState({
+          p1: this.state.p1 - 21,
+          p1_direction: "up"
+        })
+      }
+    }
+    if (event.keyCode === 37) {
+      if (this.state.p1 - 1 >= 0 && this.state.p1 - 1 <= 440) {
+        this.setState({
+          p1: this.state.p1 - 1,
+          p1_direction: "left"
+        })
+      }
+    }
+    if (event.keyCode === 39) {
+      if (this.state.p1 + 1 >= 0 && this.state.p1 + 1 <= 440)
+        this.setState({
+          p1: this.state.p1 + 1,
+          p1_direction: "right"
+        })
+    }
+  }
+  componentDidMount() {
+    document.addEventListener("keydown", this.escFunction, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.escFunction, false);
+  }
 
   render() {
- 
+
 
     return (
       <div>
         <h3 className="maze">MAZE RACE</h3>
         <br></br>
-      <P5Wrapper sketch={gen_maze} p2={this.state.p1} p1={this.state.p2}/>
+        <P5Wrapper sketch={gen_maze} p1={this.state.p1} p2={this.state.p2} p1_direction={this.state.p1_direction} />
       </div>
     );
   }
